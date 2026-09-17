@@ -78,18 +78,18 @@ A code repo reaches L2 with one setup PR produced by `/repo-ready` and reviewed 
 ```yaml
 version: 1
 repo_type: service
-homebase: card-servicing-core
-domain: card-servicing
-jira_projects: [CARD]
+homebase: orders-core
+domain: orders
+jira_projects: [ORD]
 data_classification: restricted       # public | internal | confidential | restricted
-owners: ["@org/card-servicing-core"]
+owners: ["@org/orders-core"]
 context:
   org: sdlc-foundations@^1.2          # org context plugin + version range
-  domain: card-servicing-context@^0.4 # domain context plugin
-  service_id: card-transactions-api   # entry in the domain service catalog
+  domain: orders-context@^0.4         # domain context plugin
+  service_id: order-history-api       # entry in the domain service catalog
   related_repos:                       # read on demand through GitHub MCP, never copied
-    - org/card-api-contracts
-    - org/card-web
+    - org/orders-api-contracts
+    - org/orders-web
 commands:
   setup: scripts/setup
   build: scripts/build
@@ -128,7 +128,7 @@ Context is layered: one org context repo, one context repo per domain, and files
 ```mermaid
 flowchart TD
   O[org-sdlc-context<br/>context-only] -->|publishes| OP[sdlc-foundations plugin]
-  D[card-servicing-context<br/>context-only] -->|publishes| DP[card-servicing-context plugin]
+  D[orders-context<br/>context-only] -->|publishes| DP[orders-context plugin]
   OP --> R[Code repo<br/>CLAUDE.md + .sdlc/config.yaml]
   DP --> R
   R --> N[Nested CLAUDE.md<br/>per module]
@@ -162,17 +162,17 @@ org-sdlc-context/
 **3.2 Domain context repo** (`<domain>-context`, owned by the domain's homebase leads)
 
 ```text
-card-servicing-context/
-  .sdlc/config.yaml           # repo_type: context-only, domain: card-servicing
+orders-context/
+  .sdlc/config.yaml           # repo_type: context-only, domain: orders
   CONTEXT.md  CHANGELOG.md
   core/domain-core.md         # <=30 lines, optional, loaded every session in this domain
   service-catalog.yaml        # service_id -> repo, homebase, on-call, runbook, dependencies
-  glossary.md                 # domain terms (e.g. dispute, chargeback, provisional credit)
+  glossary.md                 # domain terms (e.g. order, fulfilment, refund)
   integration-map.md          # upstream/downstream systems and contracts
   skills/                     # domain skills: explain-service, triage, runbook-step, domain policies
   templates/                  # optional overrides of org templates (required sections still apply)
   evals/
-  build/                      # packages into the card-servicing-context plugin
+  build/                      # packages into the orders-context plugin
 ```
 
 `service-catalog.yaml` is what lets `/explain-service` and `/triage` find the right repo, owner and runbook, even for a homebase engineer who has never seen the service.
@@ -278,7 +278,7 @@ Example scorecard row:
 
 | Domain | Homebase | Active repos | L0 | L1 | L2 | L3 | Special (registered) | Top gap |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| card-servicing | card-servicing-core | 42 | 6 | 9 | 18 | 7 | 2 | BT-2: commands not verified in last 30 days |
+| orders | orders-core | 42 | 6 | 9 | 18 | 7 | 2 | BT-2: commands not verified in last 30 days |
 
 **4.6 Running it at scale.** Scan in batches through GitHub MCP and cache results by repo and commit, so unchanged repos are skipped. Run weekly. Phase 2 moves the scan to a scheduled headless job with a service identity, and moves `BT-2` evidence to CI runs instead of local stamps.
 

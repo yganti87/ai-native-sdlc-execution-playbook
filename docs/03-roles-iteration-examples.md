@@ -37,7 +37,7 @@ Product and Design don't need to learn git. Claude handles branches and PRs for 
 | Need | How it works |
 | --- | --- |
 | Write requirements | Run `/intent` in the Claude desktop app. Claude asks structured questions, reads the Jira ticket, and drafts the intent with acceptance criteria written as Given/When/Then. It opens the PR itself. |
-| Already drafted in Google Docs or Jira | Paste the text, or run `/intent --from-jira CARD-123`. Claude turns it into the repo intent. The Google Doc link can stay as a supplementary link. |
+| Already drafted in Google Docs or Jira | Paste the text, or run `/intent --from-jira ORD-123`. Claude turns it into the repo intent. The Google Doc link can stay as a supplementary link. |
 | Approve | Product is CODEOWNER on intent files and on the spec's "Requirements" section, which lives in its own file (below). Approve through a GitHub PR review or a Jira approval status (section 2.4). |
 | Check the result | Run `/acceptance`, which builds a checklist from the acceptance criteria. Walk it in the preview or staging environment and record pass or fail in the PR. |
 | Change their mind | Run `/amend` (section 3). Never edit a Jira comment and expect engineering to notice. |
@@ -56,7 +56,7 @@ Product and Design don't need to learn git. Claude handles branches and PRs for 
 **2.3 Artifact layout for a change** (default layout; framework adapters can map it to other paths)
 
 ```text
-docs/sdlc/CARD-123-sort-by-amount/
+docs/sdlc/ORD-123-sort-by-amount/
   intent.md          # Product (CODEOWNER), includes acceptance criteria
   requirements.md    # Product: functional requirements (optional split from spec)
   ux.md  frames/     # Design
@@ -167,13 +167,13 @@ flowchart LR
 
 ## 5. Example 1: simple feature, clear requirements
 
-**Scenario.** Card servicing web app: let customers sort their transactions by amount. Jira `CARD-2141`. The requirements are clear, and the design system already has a sort control. Illustrative total: about 2 working days, with most of the time spent waiting at gates rather than working.
+**Scenario.** Customer web app: let customers sort their order history by amount. Jira `ORD-2141`. The requirements are clear, and the design system already has a sort control. Illustrative total: about 2 working days, with most of the time spent waiting at gates rather than working.
 
 **Tier.** `tier-detect` says Tier 2, because this is new customer-facing behavior. So an intent, a spec and `ux` are required, but each is short. Tier 2 does not have to be heavy.
 
 | When | Who | What they do | Tool | Artifact or gate |
 | --- | --- | --- | --- | --- |
-| Day 1, 09:00 | PM | Runs `/intent --from-jira CARD-2141`. Claude asks 6 questions (default order? persists across sessions? mobile too?) and drafts the intent with 4 acceptance criteria. | Claude desktop | `intent.md` PR opened |
+| Day 1, 09:00 | PM | Runs `/intent --from-jira ORD-2141`. Claude asks 6 questions (default order? persists across sessions? mobile too?) and drafts the intent with 4 acceptance criteria. | Claude desktop | `intent.md` PR opened |
 | 09:30 | Designer | Runs `/ux-spec`. Reuses the design-system `SortMenu`, exports 2 frames (default and empty state), and writes the screen-reader copy for the sort control. | Claude + Figma | `ux.md`, `frames/` added to the same PR |
 | 10:00 | Tech lead | `spec-reviewer` finds no gaps. The PM and designer approve their files as CODEOWNERS, and the PR merges. | GitHub | **Intent and UX approved** |
 | 10:15 | Engineer | Runs `/spec`. Claude picks server-side sort because the list is paginated, and notes no new data (classification unchanged). Test strategy: API and UI tests. | Claude Code | `spec.md` PR |
@@ -189,12 +189,12 @@ flowchart LR
 **PR trailers**
 
 ```text
-Jira: CARD-2141
+Jira: ORD-2141
 Change-Tier: 2
-Intent: docs/sdlc/CARD-2141-sort-by-amount/intent.md
-UX: docs/sdlc/CARD-2141-sort-by-amount/ux.md
-Spec: docs/sdlc/CARD-2141-sort-by-amount/spec.md
-Plan: docs/sdlc/CARD-2141-sort-by-amount/plan.md
+Intent: docs/sdlc/ORD-2141-sort-by-amount/intent.md
+UX: docs/sdlc/ORD-2141-sort-by-amount/ux.md
+Spec: docs/sdlc/ORD-2141-sort-by-amount/spec.md
+Plan: docs/sdlc/ORD-2141-sort-by-amount/plan.md
 Architecture: n/a: no architectural change
 ```
 
@@ -202,10 +202,10 @@ Architecture: n/a: no architectural change
 
 ## 6. Example 2: complex feature with lots of back-and-forth
 
-**Scenario.** A new pod builds "Dispute a transaction" self-service for mobile and web (epic `DSP-100`).
+**Scenario.** A new pod builds "Request a refund" self-service for mobile and web (epic `RFD-100`).
 
 - **Pod:** PM, designer, tech lead, 4 engineers.
-- **Stakeholders:** Dispute Operations, Compliance (regulatory dispute timelines and disclosures), Security, and the homebase that will own the service.
+- **Stakeholders:** Refund Operations, Compliance (consumer-protection timelines and disclosures), Security, and the homebase that will own the service.
 - **Tier:** 3, because it involves regulated workflows and restricted data.
 - **Illustrative timeline:** 6 weeks, with 3 alignment meetings, 2 scope changes and 1 constraint found during the build.
 
@@ -223,13 +223,13 @@ flowchart TD
 
 **Week 1: intent with open questions**
 
-1. The PM runs `/intent` and pastes in the Dispute Ops process doc. Claude drafts intent v1 with 5 acceptance criteria and 3 open questions: OQ1 which reason codes are offered, OQ2 which card products are in scope, OQ3 the required disclosure wording.
-2. **Alignment meeting 1** (PM, designer, tech lead, Dispute Ops, Compliance; 45 minutes). Afterward, the PM types the outcomes into `/decision-capture`, which adds them to the intent's Decisions section:
-    - D1: credit cards only in the first release (answers OQ2)
-    - D2: Dispute Ops owns the reason-code list (OQ1 assigned to Ops, due Friday)
+1. The PM runs `/intent` and pastes in the Refund Ops process doc. Claude drafts intent v1 with 5 acceptance criteria and 3 open questions: OQ1 which reason codes are offered, OQ2 which product categories are in scope, OQ3 the required disclosure wording.
+2. **Alignment meeting 1** (PM, designer, tech lead, Refund Ops, Compliance; 45 minutes). Afterward, the PM types the outcomes into `/decision-capture`, which adds them to the intent's Decisions section:
+    - D1: physical goods only in the first release (answers OQ2)
+    - D2: Refund Ops owns the reason-code list (OQ1 assigned to Ops, due Friday)
     - D3: Compliance provides the disclosure wording (OQ3 assigned to Compliance)
 
-    Claude also proposes adding "credit cards only" to Constraints.
+    Claude also proposes adding "physical goods only" to Constraints.
 3. The intent is approved with OQ1 and OQ3 marked **provisional**. The PM approves by moving the Jira sub-task to "Intent Approved". The designer and engineers can start, and nobody is blocked on the reason-code list.
 
 **Week 2: settle UX by prototyping, not meeting**
@@ -240,9 +240,9 @@ flowchart TD
 
 **Weeks 2–3: spec and architecture review**
 
-1. The tech lead runs `/spec` and `/design-doc`. The HLD adds a new dispute-intake service that integrates with the existing case-management platform.
+1. The tech lead runs `/spec` and `/design-doc`. The HLD adds a new refund-intake service that integrates with the existing case-management platform.
 2. The `data-classification` skill flags that the free-text description may contain restricted data. The spec adds field-level encryption, a retention rule and log redaction. `security-reviewer` confirms.
-3. **Alignment meeting 2** (architecture review): `/decision-capture` records D5 (async submission through a queue, so outages don't lose disputes) and D6 (idempotency keys). The HLD is amended, and the architect and Security approve. **Spec and HLD approved.**
+3. **Alignment meeting 2** (architecture review): `/decision-capture` records D5 (async submission through a queue, so outages don't lose refund requests) and D6 (idempotency keys). The HLD is amended, and the architect and Security approve. **Spec and HLD approved.**
 4. `/plan` splits the work into slices, each behind its own flag:
     - S1: intake API and queue (settled)
     - S2: mobile and web flow (settled)
@@ -250,7 +250,7 @@ flowchart TD
 
 **Week 3: scope change mid-way**
 
-1. Dispute Ops returns the reason codes (OQ1 settled). In the same message, the PM asks to add **"upload a receipt as evidence"** after an executive review.
+1. Refund Ops returns the reason codes (OQ1 settled). In the same message, the PM asks to add **"upload a receipt as evidence"** after an executive review.
 2. The PM runs `/amend`: intent v2 adds acceptance criteria AC6 and AC7; the requirements add R9 and R10; the changelog cites D7.
 3. `/change-impact` reports:
     - 2 open PRs affected (S2 web and S2 mobile)
@@ -277,7 +277,7 @@ flowchart TD
 **The resulting artifact trail**
 
 ```text
-docs/sdlc/DSP-100-dispute-intake/
+docs/sdlc/RFD-100-refund-intake/
   intent.md          v2  (amended wk 3, D7)
   requirements.md    v3  (R9-R10 added wk 3; R10 amended wk 4, D8)
   ux.md  frames/     v2  (flow B per D4; upload state added)
@@ -290,21 +290,21 @@ docs/sdlc/DSP-100-dispute-intake/
 **Why it stays efficient despite the churn**
 
 - **Meetings produced records, not just memories.** Three meetings instead of the usual weekly syncs, because most questions were settled in PR threads.
-- **Disputes were settled with evidence.** Prototypes decided between competing designs.
+- **Debates were settled with evidence.** Prototypes decided between competing designs.
 - **Unsettled requirements didn't block work.** Marking them provisional let the other slices proceed.
 - **Changes had a known blast radius.** `/change-impact` scoped each change, so only the affected owners re-approved and only the stale plans were rebuilt.
 - **Constraints surfaced as decisions.** The vendor limit became a recorded decision instead of a silent change in behavior.
 
 ## 7. Example 3: homebase engineer fixes a production issue in code they didn't write
 
-**Scenario.** Five months after the dispute pod was disbanded, incident `INC-4471` reports that some iOS customers get a generic error when submitting a dispute with a receipt. Jordan, a homebase engineer who never worked on the pod, is on call. Nobody from the pod is available.
+**Scenario.** Five months after the refund pod was disbanded, incident `INC-4471` reports that some iOS customers get a generic error when submitting a refund request with a receipt. Jordan, a homebase engineer who never worked on the pod, is on call. Nobody from the pod is available.
 
 ```mermaid
 sequenceDiagram
   participant J as Jordan (homebase)
   participant C as Claude + domain plugin
   participant R as Repo artifacts
-  J->>C: /explain-service dispute-intake
+  J->>C: /explain-service refund-intake
   C->>R: CLAUDE.md, hld.md, decisions.md, handoff.md
   C-->>J: Map, upload path, D8, known risks
   J->>C: /triage with redacted logs
@@ -316,10 +316,10 @@ sequenceDiagram
 
 | Minute | What Jordan does | What Claude does | Where the answer came from |
 | --- | --- | --- | --- |
-| 0–10 | Opens the repo in Claude Code and runs `/explain-service dispute-intake` | At session start, loads the org core and the homebase domain plugin. Summarizes the architecture, the upload path (device compression → API → malware scan → case-management platform) and the 5 MB limit | `CLAUDE.md`, `hld.md`, `decisions.md` (D8), `handoff.md` known risks |
+| 0–10 | Opens the repo in Claude Code and runs `/explain-service refund-intake` | At session start, loads the org core and the homebase domain plugin. Summarizes the architecture, the upload path (device compression → API → malware scan → case-management platform) and the 5 MB limit | `CLAUDE.md`, `hld.md`, `decisions.md` (D8), `handoff.md` known risks |
 | 10–25 | Pastes gateway and service logs into `/triage` | A `UserPromptSubmit` hook checks the pasted logs for restricted data before analysis (the logs were already redacted). Claude links the failures to iOS HEIC photos: a new iOS version changed image metadata, so compression is skipped, files exceed 5 MB, and the case-management API times out instead of returning a clear error | Logs, code, R10 and D8 in the requirements and decisions |
-| 25–35 | Runs `/runbook-step "attachment failures"` | Walks the runbook the pod wrote: confirm the vendor is healthy, then turn off the `dispute.evidence_upload` flag so disputes can still be filed without receipts. Asks for confirmation before each step. **Jordan makes the flag change** under the emergency change process. The agent doesn't touch production in Phase 1. | `runbook.md` from the handoff |
-| 35–50 | Runs `/intent-from-incident INC-4471` | `tier-detect` classifies the fix as Tier 3 (dispute service is in `risk_paths`). Because it's a defect fix with no change in required behavior, Claude drafts a **short defect intent linked to the original intent** and a **spec amendment** to R10's handling: normalize HEIC before compressing, and map vendor timeouts to the clear error state already defined in `ux.md`. | Artifact contract defect-fix rule (section 4.1) |
+| 25–35 | Runs `/runbook-step "attachment failures"` | Walks the runbook the pod wrote: confirm the vendor is healthy, then turn off the `refund.evidence_upload` flag so refund requests can still be filed without receipts. Asks for confirmation before each step. **Jordan makes the flag change** under the emergency change process. The agent doesn't touch production in Phase 1. | `runbook.md` from the handoff |
+| 35–50 | Runs `/intent-from-incident INC-4471` | `tier-detect` classifies the fix as Tier 3 (refund service is in `risk_paths`). Because it's a defect fix with no change in required behavior, Claude drafts a **short defect intent linked to the original intent** and a **spec amendment** to R10's handling: normalize HEIC before compressing, and map vendor timeouts to the clear error state already defined in `ux.md`. | Artifact contract defect-fix rule (section 4.1) |
 | 50–60 | Homebase PO and tech lead approve the amendment | — | CODEOWNERS; the homebase now owns these files |
 | 60–150 | Runs `/plan` and builds | First writes a failing test using a HEIC fixture, then fixes the code. `/self-review` and `spec-conformance` pass. `context-curator` adds a "Known pitfalls: HEIC and iOS image metadata" entry to `CLAUDE.md` and updates the runbook | — |
 | 150 | Runs `/pr-prepare` | Opens the PR with trailers. Security and a peer approve. The fix ships through the emergency change process, and the flag is turned back on. | — |
@@ -328,13 +328,13 @@ sequenceDiagram
 **PR trailers**
 
 ```text
-Jira: DSP-812
+Jira: RFD-812
 Change-Tier: 3
 Emergency: INC-4471
-Intent: docs/sdlc/DSP-812-heic-upload-fix/intent.md
-Amends: docs/sdlc/DSP-100-dispute-intake/requirements.md@v3
-Spec: docs/sdlc/DSP-100-dispute-intake/spec.md
-UX: n/a: uses existing error state in DSP-100 ux.md
+Intent: docs/sdlc/RFD-812-heic-upload-fix/intent.md
+Amends: docs/sdlc/RFD-100-refund-intake/requirements.md@v3
+Spec: docs/sdlc/RFD-100-refund-intake/spec.md
+UX: n/a: uses existing error state in RFD-100 ux.md
 ```
 
 **Why run-the-engine got easier**

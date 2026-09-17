@@ -20,7 +20,7 @@ Each engineer also uses AI differently, so the gains don't add up across teams o
 
 - any pod build quickly with AI agents
 - any homebase confidently run what pods leave behind
-- quality and regulatory controls stay intact as we scale across roughly 900 engineers
+- quality and regulatory controls stay intact as we scale across hundreds of engineers
 
 **Goal:** shorter idea-to-production lead time with no loss of quality, measured against baselines taken at the pilot.
 
@@ -128,7 +128,7 @@ We track speed and quality together, so a gain in one never hides a loss in the 
 
 ## References
 
-1. Anthropic, [The AI-Native SDLC Playbook](https://claude.com/blog/the-ai-native-sdlc-playbook). Our reference model, adapted here for a regulated bank and our pod and homebase operating model.
+1. Anthropic, [The AI-Native SDLC Playbook](https://claude.com/blog/the-ai-native-sdlc-playbook). Our reference model, adapted here for a regulated enterprise and our pod and homebase operating model.
 2. [AI-Native SDLC Phase 1: Foundations](02-phase-1-foundations.md). Detailed Phase 1 design.
 3. [AI-Native SDLC Phase 1: Repo and Context Readiness](04-repo-and-context-readiness.md). Repo setup, multi-level context and org-wide readiness checks.
 4. [AI-Native SDLC: Cross-Functional Roles, Iteration and Worked Examples](03-roles-iteration-examples.md). Product and Design roles, how changing requirements are handled, and three worked examples.

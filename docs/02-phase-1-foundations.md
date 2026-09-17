@@ -6,7 +6,9 @@ Draft · 2026-09-16 · Shared version: https://claude.ai/code/artifact/454a4404-
 
 Phase 1 delivers one installable **Foundations plugin** plus the standards it implements. Every piece runs on an engineer's machine, and the same pieces move into CI in Phase 2 without being rewritten. Companion doc: [Executive One-Pager](01-exec-one-pager.md).
 
-**Constraints we design around**
+**Assumed constraints**
+
+This design assumes an environment common in large, regulated enterprises. Adjust it where yours differs.
 
 | Constraint | What it means for Phase 1 |
 | --- | --- |
@@ -116,7 +118,7 @@ Proposal: a **major PR is Tier 2 or above**. A PR is Tier 2 or above if it meets
 
 ## 3. Context management
 
-Context is organized in five layers, each with a named owner. The org layer ships as marketplace skills plus a short always-loaded core, not as copied files. That lets 900 engineers get updates by upgrading the plugin instead of editing every repo.
+Context is organized in five layers, each with a named owner. The org layer ships as marketplace skills plus a short always-loaded core, not as copied files. That lets every engineer get updates by upgrading the plugin instead of editing every repo.
 
 | Layer | Contents | Where it lives | How Claude loads it | Owner |
 | --- | --- | --- | --- | --- |
@@ -238,7 +240,7 @@ Checks that need GitHub or Jira data (reviews, approvals, ticket status) run ins
 Evidence format: one line per required approval, recorded in the PR body and commit trailers.
 
 ```text
-Approval-Evidence: intent artifact=a1b2c3d source=jira ref=DSP-101 status="Intent Approved" by=<approver> at=2026-09-14
+Approval-Evidence: intent artifact=a1b2c3d source=jira ref=ORD-101 status="Intent Approved" by=<approver> at=2026-09-14
 Approval-Evidence: spec artifact=d4e5f6a source=github ref=PR#482 review=approved by=<codeowner> at=2026-09-15
 ```
 
@@ -278,7 +280,7 @@ Findings go to homebase leads as Jira tickets or a report. Nobody is blocked; th
 | [Husky](https://typicode.github.io/husky/) | Node.js hook manager | Familiar in JS repos | JS/TS repos only | Team choice |
 | Git `init.templateDir` or a global `core.hooksPath` | Hooks installed on every developer machine | Covers every repo without per-repo setup | A global `hooksPath` overrides repo hooks, so it must chain to them | Endpoint and device management |
 | GitHub repository/org rulesets with commit metadata or branch-name restrictions | Server-side pattern rules, such as requiring `Jira: [A-Z]+-\d+` in commit messages | Server-side enforcement without Actions | Availability depends on the GitHub plan; set by org admins; checks the pattern only, not artifact content | GitHub org admins |
-| Org-wide `.github` repo defaults | Default PR template for every repo | One PR template for 900 engineers | Repos can override it; doesn't enforce anything | GitHub org admins |
+| Org-wide `.github` repo defaults | Default PR template for every repo | One PR template for every repo | Repos can override it; doesn't enforce anything | GitHub org admins |
 | Jira–GitHub integration and Jira automation | Jira development panel shows linked PRs; automation flags tickets closed without a linked PR or intent | Uses our system of record | Detective only; needs a Jira admin | Jira admins |
 | Managed Claude settings (Phase 2) | Hooks and permissions deployed centrally | Users can't disable them | Central change process | Claude platform admins |
 
